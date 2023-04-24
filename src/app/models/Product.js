@@ -6,22 +6,21 @@ const Schema = mongoose.Schema;
 
 const Product = new Schema(
     {
-        _id: { type: Number },
-        name: { type: String, required: true },
-        image: { type: String, required: true },
-        category: { type: String, required: true },
-        description: { type: String, required: true },
-        price: { type: String, required: true },
-        slug: { type: String, slug: 'name', slugOn: { updateOne: true }, unique: true }
+        nameprod: { type: String },
+        image: { type: String },
+        category: { type: String},
+        description: { type: String},
+        price: { type: String},
+        slug: { type: String, slug: "nameprod", unique: true, slugPaddingSize: 2 }
     },
     // __v
     { 
         versionKey: false ,
-        _id: false,
+        collection: "products"
     }
 );
 
 mongoose.plugin(slug);
 // Product.plugin(mongooseDelete, {overrideMethods: 'all'});
 
-module.exports = mongoose.model('Product', Product);
+module.exports = mongoose.model('products', Product);

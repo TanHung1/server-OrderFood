@@ -1,36 +1,49 @@
 const Product = require('../models/Product');
+const Staff = require('../models/Staff');
 const { mongooesToObject } = require('../../util/mongoose');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
 
-class AdminController {
+class AdminController {   
+   //[post] /api/admin/create-product
+    createProduct = async (req, res, next) => {
+        try {
 
-    //[GET] /api/admin/create
-    create(req, res, next) {
+            const
+                {
+                    nameprod,
+                    description,
+                    price,
+                    image,
+                    category,
+                    slug
+                } = req.body
 
-        // res.render('admin/create')
+            const product = await new Product(
+                {
+                    nameprod,
+                    description,
+                    price,
+                    image,
+                    category,
+                }
+            );
+            product
+                .save()
+            res.json(product);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    } 
 
-    }
-    //[post] /api/admin/storeProduct
-    storeProduct(req, res, next) {
-        Product.findOne({})
-            .sort({ _id: 'desc' })
-            .then(lastestProduct => {
-                req.body._id = lastestProduct._id + 1;
-                const product = new Product(req.body);
-                product
-                    .save()
-                    .catch(next);
-            })
-
-    }
-    // [get] /api/admin/stored-products
+    // [get] /api/admin/stored-product
     storedProducts(req, res, next) {
         Promise.all([Product.find({}), Product.countDocumentsDeleted()])
             .then(([products, deleteCount]) =>
                 res.json({
                     deleteCount,
                     products: mutipleMongooseToObject(products),
-                })                
+                })
             )
             .catch((next));
 
@@ -47,6 +60,49 @@ class AdminController {
         //         console.log(deleteCount);
         //     })
         //     .catch(() => {});
+    }
+
+     // [post] /api/admin/create-staff
+     createStaff = async (req, res, next) => {
+        try {
+            const
+                {
+                    namestaff,
+                    role,
+                    numberphone,
+                    cccd,
+                    pass,  
+                    slug                  
+                } = req.body
+
+            const staff = await new Staff(
+                {
+                    namestaff,
+                    role,
+                    numberphone,
+                    cccd,
+                    pass, 
+                }
+            );
+            staff
+                .save()
+            res.json(staff);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    // [get] /api/admin/stored-staff
+    storedStaffs(req, res, next) {
+        Promise.all([Staff.find({}), Staff.countDocumentsDeleted()])
+            .then(([staffs, deleteCount]) =>
+                res.json({
+                    deleteCount,
+                    staffs: mutipleMongooseToObject(staffs),
+                })
+            )
+            .catch((next));
     }
 
     // [get] /admin/stored-pizzas
