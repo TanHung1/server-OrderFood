@@ -63,7 +63,7 @@ class AdminController {
     }
 
      // [post] /api/admin/create-staff
-     createStaff = async (req, res, next) => {
+    createStaff = async (req, res, next) => {
         try {
             const
                 {
@@ -105,61 +105,85 @@ class AdminController {
             .catch((next));
     }
 
-    // [get] /admin/stored-pizzas
-    // trashPizza(req, res, next)
-    // {
-    //     Pizza.findDeleted({})
-    //     .then(pizzas => res.render('admin/trash-pizzas', {
-    //         pizzas: mutipleMongooseToObject(pizzas)
-    //     }))
-    //     .catch(next);
-    // }
+    // [get] /api/admin/trash-products
+    trashProducts(req, res, next)
+    {
+        Product.findDeleted({})
+        .then(products => 
+            res.json( {
+            products: mutipleMongooseToObject(products)
+        }))
+        .catch(next);
+    }
 
+    // [get] /api/admin/trash-staff
+    trashStaffs(req, res, next)
+    {
+        Staff.findDeleted({})
+        .then(staffs => 
+            res.json( {
+            staffs: mutipleMongooseToObject(staffs)
+        }))
+        .catch(next);
+    }
+    
+    // [put] api/admim/:id/update-staff
+    updateStaff = (req, res, next) => {
+        Staff.updateOne({ _id: req.params.id }, req.body)
+            .then(update => res.status(res.status(201).send(update)))
+            .catch((err) => (
+                console.log(err),
+                res.status(res.status(500).send(err)
 
+                )))
+    }
+    
+    // [put] api/admim/:id/update-product
+    updateProduct = (req, res, next) => {
+        Product.updateOne({ _id: req.params.id }, req.body)
+            .then(update => res.status(res.status(201).send(update)))
+            .catch((err) => (
+                console.log(err),
+                res.status(res.status(500).send(err)
 
-    // // [get] /admim/:id/edit
-    // edit(req, res, next) {
-    //     Pizza.findById(req.params.id)
-    //         .then(pizza => res.render('admin/edit',{
-    //             pizza: mongooesToObject(pizza)
-    //         }))
-    //         .catch(next);
+                )))
+    }
 
-    // }
+    // [delete] /admim/:id/delete-product
+    deleteProduct(req, res, next)
+    {
+        Product.delete({ _id: req.params.id })  
+                res.status(200).send("oke")     
+    }
 
-    // // [put] /admim/:id
-    // update(req, res, next)
-    // {
-    //     Pizza.updateOne({ _id: req.params.id}, req.body)
-    //         .then(() => res.redirect('/admin/stored-pizzas'))
-    //         .catch(next);
-    // }
+    // [delete] /admim/:id/delete-staff
+    deleteStaff(req, res, next)
+    {
+        Staff.delete({ _id: req.params.id })            
+    }
 
+    // [delete] /admim/:id/forcedelete-product
+    forcedeleteProduct(req, res, next)
+    {
+        Product.deleteOne({ _id: req.params.id })
+            .then(res.status(200).json({
+                message: 'Xóa thành công'
+            }))
+            .catch((err) => (
+                console.log(err),
+                res.status(res.status(500).send(err))
+                )
+            
+    )};
 
-    // [delete] /admim/:id
-    // delete(req, res, next)
-    // {
-    //     Pizza.delete({ _id: req.params.id })
-    //         .then(() => res.redirect('back'))
-    //         .catch(next);
-    // }
+    // [patch] /admim/:id/restore
+    restore(req, res, next)
+    {
 
-    // // [delete] /admim/:id/force
-    // forcedelete(req, res, next)
-    // {
-    //     Pizza.deleteOne({ _id: req.params.id })
-    //         .then(() => res.redirect('back'))
-    //         .catch(next);
-    // }
-
-    // // [patch] /admim/:id/restore
-    // restore(req, res, next)
-    // {
-
-    //     Pizza.restore({ _id: req.params.id })
-    //         .then(() => res.redirect('back'))
-    //         .catch(next);
-    // }
+        Pizza.restore({ _id: req.params.id })
+            .then(() => res.redirect('back'))
+            .catch(next);
+    }
 
     // // [post] /admim/handle-form-actions
     // handleFormActions(req, res, next) {

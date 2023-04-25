@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const slug = require('mongoose-slug-updater');
-// const mongooseDelete = require('mongoose-delete');
+const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
@@ -16,11 +16,12 @@ const Product = new Schema(
     // __v
     { 
         versionKey: false ,
-        collection: "products"
+        collection: "products", 
+        timestamps: true,
     }
 );
 
 mongoose.plugin(slug);
-// Product.plugin(mongooseDelete, {overrideMethods: 'all'});
+Product.plugin(mongooseDelete, {overrideMethods: 'all', deletedAt: true});
 
 module.exports = mongoose.model('products', Product);
