@@ -17,11 +17,11 @@ const Product = new Schema(
     { 
         versionKey: false ,
         collection: "products", 
-        timestamps: true,
+        // timestamps: true,
     }
 );
 
 mongoose.plugin(slug);
-Product.plugin(mongooseDelete, {overrideMethods: 'all', deletedAt: true});
+Product.plugin(mongooseDelete, {overrideMethods: 'all'});
 
 module.exports = mongoose.model('products', Product);

@@ -3,38 +3,18 @@ const Staff = require('../models/Staff');
 const { mongooesToObject } = require('../../util/mongoose');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
 
-class AdminController {   
-   //[post] /api/admin/create-product
+class AdminController {
+    //[post] /api/admin/create-product
     createProduct = async (req, res, next) => {
         try {
-
-            const
-                {
-                    nameprod,
-                    description,
-                    price,
-                    image,
-                    category,
-                    slug
-                } = req.body
-
-            const product = await new Product(
-                {
-                    nameprod,
-                    description,
-                    price,
-                    image,
-                    category,
-                }
-            );
-            product
-                .save()
+            const product = await new Product(req.body);
+            product.save()
             res.json(product);
         }
-        catch (error) {
-            console.log(error);
+        catch (err) {
+            console.log(err);
         }
-    } 
+    }
 
     // [get] /api/admin/stored-product
     storedProducts(req, res, next) {
@@ -45,47 +25,71 @@ class AdminController {
                     products: mutipleMongooseToObject(products),
                 })
             )
-            .catch((next));
-
-        // Pizza.find({})
-        //     .then(pizzas => 
-        //         res.render('admin/stored-pizzas', {
-        //             pizzas: mutipleMongooseToObject(pizzas)
-        //         }),
-        //     )
-        //     .catch((next));
-
-        // Pizza.countDocumentsDeleted() 
-        //     .then((deleteCount) => {
-        //         console.log(deleteCount);
-        //     })
-        //     .catch(() => {});
+            .catch((err) => next(err));
     }
 
-     // [post] /api/admin/create-staff
+    // [get] /api/admin/trash-products
+    trashProducts(req, res, next) {
+        Product.findDeleted({})
+            .then(products =>
+                res.json({
+                    products: mutipleMongooseToObject(products)
+                }))
+            .catch(next);
+    }
+
+    // [put] api/admim/:id/update-product
+    updateProduct = (req, res, next) => {
+        Product.updateOne({ _id: req.params.id }, req.body)
+            .then(() =>
+                res.status(200).send("oke")
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    }
+
+    // [delete] /admim/:id/delete-staff
+    deleteProduct(req, res, next) {
+        Product.delete({ _id: req.params.id })
+            .then(
+                res.status(200).send("oke")
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    }
+
+    // [patch] /admim/:id/restoreProduct
+    restoreProduct(req, res, next) {
+
+        Product.restore({ _id: req.params.id })
+            .then(() =>
+                res.status(200).send('oke'))
+            .catch(next);
+    }
+
+    // [delete] api/admin/:id/forcedeletProduct
+    forcedeleteProduct(req, res, next) {
+        Product.deleteOne({ _id: req.params.id })
+            .then(
+                res.status(200).send('oke')
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(res.status(500).send(err))
+            )
+
+            )
+    };
+
+    // [post] /api/admin/create-staff
     createStaff = async (req, res, next) => {
         try {
-            const
-                {
-                    namestaff,
-                    role,
-                    numberphone,
-                    cccd,
-                    pass,  
-                    slug                  
-                } = req.body
-
-            const staff = await new Staff(
-                {
-                    namestaff,
-                    role,
-                    numberphone,
-                    cccd,
-                    pass, 
-                }
-            );
-            staff
-                .save()
+            const staff = await new Staff(req.body);
+            staff.save()
             res.json(staff);
         }
         catch (error) {
@@ -100,122 +104,67 @@ class AdminController {
                 res.json({
                     deleteCount,
                     staffs: mutipleMongooseToObject(staffs),
-                })
+                }),
             )
-            .catch((next));
-    }
-
-    // [get] /api/admin/trash-products
-    trashProducts(req, res, next)
-    {
-        Product.findDeleted({})
-        .then(products => 
-            res.json( {
-            products: mutipleMongooseToObject(products)
-        }))
-        .catch(next);
+            .catch((err) => next(err));
     }
 
     // [get] /api/admin/trash-staff
-    trashStaffs(req, res, next)
-    {
+    trashStaffs(req, res, next) {
         Staff.findDeleted({})
-        .then(staffs => 
-            res.json( {
-            staffs: mutipleMongooseToObject(staffs)
-        }))
-        .catch(next);
-    }
-    
-    // [put] api/admim/:id/update-staff
-    updateStaff = (req, res, next) => {
-        Staff.updateOne({ _id: req.params.id }, req.body)
-            .then(update => res.status(res.status(201).send(update)))
-            .catch((err) => (
-                console.log(err),
-                res.status(res.status(500).send(err)
-
-                )))
-    }
-    
-    // [put] api/admim/:id/update-product
-    updateProduct = (req, res, next) => {
-        Product.updateOne({ _id: req.params.id }, req.body)
-            .then(update => res.status(res.status(201).send(update)))
-            .catch((err) => (
-                console.log(err),
-                res.status(res.status(500).send(err)
-
-                )))
-    }
-
-    // [delete] /admim/:id/delete-product
-    deleteProduct(req, res, next)
-    {
-        Product.delete({ _id: req.params.id })  
-                res.status(200).send("oke")     
-    }
-
-    // [delete] /admim/:id/delete-staff
-    deleteStaff(req, res, next)
-    {
-        Staff.delete({ _id: req.params.id })            
-    }
-
-    // [delete] /admim/:id/forcedelete-product
-    forcedeleteProduct(req, res, next)
-    {
-        Product.deleteOne({ _id: req.params.id })
-            .then(res.status(200).json({
-                message: 'Xóa thành công'
-            }))
-            .catch((err) => (
-                console.log(err),
-                res.status(res.status(500).send(err))
-                )
-            
-    )};
-
-    // [patch] /admim/:id/restore
-    restore(req, res, next)
-    {
-
-        Pizza.restore({ _id: req.params.id })
-            .then(() => res.redirect('back'))
+            .then(staffs =>
+                res.json({
+                    staffs: mutipleMongooseToObject(staffs)
+                }))
             .catch(next);
     }
 
-    // // [post] /admim/handle-form-actions
-    // handleFormActions(req, res, next) {
-    //     switch (req.body.action) {
-    //         case 'delete':
-    //             Pizza.delete({ _id: {$in: req.body.pizzasId } })
-    //                 .then(() => res.redirect('back'))
-    //                 .catch(next);
-    //             break;
+    // [put] api/admim/:id/update-staff
+    updateStaff = (req, res, next) => {
+        Staff.updateOne({ _id: req.params.id }, req.body)
+            .then(
+                res.status(200).send("oke")
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    }
 
-    //         default:
-    //             res.json({ message: ' khong hop le' });
-    //     }
-    // }
+    // [delete] /admim/:id/delete-staff
+    deleteStaff(req, res, next) {
+        Staff.delete({ _id: req.params.id })
+            .then(
+                res.status(200).send("oke")
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    }
+    //[patch] /api/admin/:id/restore-staff
+    restoreStaff(req, res, next) {
 
-    // handleFormTrashActions(req, res, next) {
-    //     switch (req.body.action) {
-    //         case 'delete':
-    //             Pizza.deleteOne({ _id: { $in: req.body.pizzasId } })
-    //                 .then(() => res.redirect('back'))
-    //                 .catch(next);
-    //             break;
+        Staff.restore({ _id: req.params.id })
+            .then(() =>
+                res.status(200).send('oke'))
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    }
 
-    //         case 'restore':
-    //             Pizza.restore({ _id: { $in: req.body.pizzasId } })
-    //                 .then(() => res.redirect('back'))
-    //                 .catch(next);
-    //             break;
-    //         default:
-    //             res.json({ message: ' khong hop le' });
-    //     }
-    // }
+    // [delete] api/admin/:id/forcedelet-staff
+    forcedeleteStaff(req, res, next) {
+        Staff.deleteOne({ _id: req.params.id })
+            .then(
+                res.status(200).send('oke')
+            )
+            .catch((err) => (
+                console.log(err),
+                res.status(500).send(err)
+            ))
+    };
 }
 
 module.exports = new AdminController;
