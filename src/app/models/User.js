@@ -5,22 +5,59 @@ const Schema = mongoose.Schema;
 
 const User = new Schema(
     {
-        nameuser: {type: String},
-        numberphone: {type: String},
-        email: {type: String},
-        pass: {type: String},
-        sex: {type: String},
-        dob: {type: Date},
-        address: {type: String},
+        username: {
+            type: String,
+            require: true
+        },
+
+        phonenumber: {
+            type: String,
+            require: true,
+            unique : true,
+            maxLength: 10,
+            minLength: 10,
+        },
+
+        email: {
+            type: String,
+            require: true,
+            unique: true,
+        },
+
+        password: {
+            type: String
+        },
+
+        sex: {
+            type: String
+        },
+
+        dob: {
+            type: Date
+        },
+
+        address: {
+            type: String
+        },
+
+        admin: {
+            type: Boolean,
+            default: false,
+        },
+
+        staff: {
+            type: Boolean,
+            default: false,
+        }
     },
 
     {
         versionKey: false,
-        collection: "users"
+        collection: "users",
+        timestamps: true,
     }
 );
 
-mongoose.plugin(slug);
 User.plugin(mongooseDelete, {overrideMethods: 'all'});
 
-module.exports = mongoose.model('Users', User);
+module.exports = mongoose.model('users', User);

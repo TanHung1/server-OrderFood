@@ -4,7 +4,7 @@ const { mutipleMongooseToObject } = require('../../util/mongoose');
 
 class ProductController {
     show(req, res, next) {
-        // [get] /product/
+        // [get] api/product/
         Product.find({})
             .then(products => {
                 res.status(200).json({

@@ -6,12 +6,11 @@ const Schema = mongoose.Schema;
 
 const Staff = new Schema(
     {
-        // id: { type: Number },
         namestaff: { type: String },
         role: { type: String },
         numberphone: { type: String},
-        cccd: { type: String},
-        pass: { type: String},
+        citizenid: { type: String},
+        password: { type: String},
 
     },
     // __v

@@ -11,6 +11,8 @@ const Product = new Schema(
         category: { type: String},
         description: { type: String},
         price: { type: String},
+        rating: { type: String },
+        cmt: { type: String},
         slug: { type: String, slug: "nameprod", unique: true, slugPaddingSize: 2 }
     },
     // __v

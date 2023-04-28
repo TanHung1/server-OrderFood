@@ -7,12 +7,12 @@ class AdminController {
     //[post] /api/admin/create-product
     createProduct = async (req, res, next) => {
         try {
-            const product = await new Product(req.body);
-            product.save()
+            const newProduct = await new Product(req.body);
+            const product = await newProduct.save();
             res.json(product);
         }
         catch (err) {
-            console.log(err);
+            res.status(500).json(err);
         }
     }
 
@@ -25,7 +25,9 @@ class AdminController {
                     products: mutipleMongooseToObject(products),
                 })
             )
-            .catch((err) => next(err));
+            .catch((err) =>
+                res.status(401).json(err),
+            );
     }
 
     // [get] /api/admin/trash-products
@@ -35,7 +37,9 @@ class AdminController {
                 res.json({
                     products: mutipleMongooseToObject(products)
                 }))
-            .catch(next);
+            .catch((err) =>
+                res.status(401).json(err),
+            );
     }
 
     // [put] api/admim/:id/update-product
@@ -45,8 +49,7 @@ class AdminController {
                 res.status(200).send("oke")
             )
             .catch((err) => (
-                console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     }
 
@@ -57,8 +60,7 @@ class AdminController {
                 res.status(200).send("oke")
             )
             .catch((err) => (
-                console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     }
 
@@ -68,7 +70,9 @@ class AdminController {
         Product.restore({ _id: req.params.id })
             .then(() =>
                 res.status(200).send('oke'))
-            .catch(next);
+            .catch((err) =>
+                res.status(500).json(err),
+            );
     }
 
     // [delete] api/admin/:id/forcedeletProduct
@@ -77,12 +81,9 @@ class AdminController {
             .then(
                 res.status(200).send('oke')
             )
-            .catch((err) => (
-                console.log(err),
-                res.status(res.status(500).send(err))
-            )
-
-            )
+            .catch((err) => 
+                res.status(500).json(err),
+            );
     };
 
     // [post] /api/admin/create-staff
@@ -92,8 +93,8 @@ class AdminController {
             staff.save()
             res.json(staff);
         }
-        catch (error) {
-            console.log(error);
+        catch (err) {
+            res.status(500).json(err);
         }
     }
 
@@ -106,7 +107,9 @@ class AdminController {
                     staffs: mutipleMongooseToObject(staffs),
                 }),
             )
-            .catch((err) => next(err));
+            .catch((err) =>
+                res.status(401).json(err),
+            );
     }
 
     // [get] /api/admin/trash-staff
@@ -116,7 +119,9 @@ class AdminController {
                 res.json({
                     staffs: mutipleMongooseToObject(staffs)
                 }))
-            .catch(next);
+            .catch((err) =>
+                res.status(401).json(err),
+            );
     }
 
     // [put] api/admim/:id/update-staff
@@ -127,7 +132,7 @@ class AdminController {
             )
             .catch((err) => (
                 console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     }
 
@@ -139,7 +144,7 @@ class AdminController {
             )
             .catch((err) => (
                 console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     }
     //[patch] /api/admin/:id/restore-staff
@@ -149,8 +154,7 @@ class AdminController {
             .then(() =>
                 res.status(200).send('oke'))
             .catch((err) => (
-                console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     }
 
@@ -162,7 +166,7 @@ class AdminController {
             )
             .catch((err) => (
                 console.log(err),
-                res.status(500).send(err)
+                res.status(500).json(err)
             ))
     };
 }

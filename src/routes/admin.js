@@ -20,5 +20,4 @@ router.delete('/:id/delete-staff', adminController.deleteStaff);
 router.patch('/:id/restore-staff', adminController.restoreStaff);
 router.delete('/:id/forcedelete-staff', adminController.forcedeleteStaff);
 
-
 module.exports = router;
