@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const slug = require("mongoose-slug-updater");
 const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
@@ -11,6 +10,10 @@ const Staff = new Schema(
         numberphone: { type: String},
         citizenid: { type: String},
         password: { type: String},
+        admin: {
+            Boolean,
+            default: false,
+        }
 
     },
     // __v
@@ -19,7 +22,6 @@ const Staff = new Schema(
         collection: "staffs"
     }
 );
-mongoose.plugin(slug);
 Staff.plugin(mongooseDelete, {overrideMethods: 'all'});
 
 module.exports = mongoose.model('staffs', Staff);
