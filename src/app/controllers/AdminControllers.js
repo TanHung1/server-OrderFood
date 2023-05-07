@@ -1,79 +1,30 @@
 const Product = require('../models/Product');
-const Staff = require('../models/Staff');
-const Customer = require('../models/Customer');
-const Admin = require('../models/Admin');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const User = require('../models/Account');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
 
 class AdminController {
-    //[post] /api/admin/register
-    registerAdmin = async (req, res) => {
-        try {
-            const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt(req.body.password, salt);
-
-            const newAdmin = await new Admin({
-                nameadmin: req.body.username,
-                phonenumber: req.body.phonenumber,
-                email: req.body.email,
-                password: hashed,
-            });
-
-            const admin = await newAdmin.save();
-            res.status(200).json(admin);
-            
-        } catch (err){
-            res.status(500).json(err);
-            
-        }
-    };
-
-    //[post] /api/admin/login
-    loginAdmin = async (req, res) => {
-        try {
-            const admin = await Admin.findOne({phonenumber: req.body.phonenumber});
-            
-            if (!admin)
-            {
-                res.status(404).json('Sai so dien thoai');
-            }
-
-            const validPassword = await bcrypt.compare(
-                req.body.password,
-                admin.password,
-            );
-
-            if(!validPassword)
-            {
-                res.status(404).json('sai mat khau');
-            }
-
-            if(admin && validPassword)
-            {
-                jwt.sign({
-                    id: admin.id,
-                    admin: this.admin
-                },
-                process.env.jwt_access_token,
-                {expiresIn: "90d"}
-                )
-                res.status(200).json('Dang nhap thanh cong');
-            }
-
-        } catch (err) {
-            res.status(500).json(err);
-            
-        }
-    };
-
 //-----------PRODUCT----------    
     //[post] /api/admin/create-product
     createProduct = async (req, res) => {
         try {
-            const newProduct = await new Product(req.body);
-            const product = await newProduct.save();
-            res.json(product);
+            const {
+                nameprod,
+                image,
+                category,
+                description,
+                price,
+            } = req.body;
+
+            const product = await new Product(
+                nameprod,
+                image,
+                category,
+                description,
+                price
+            );
+            product.save();
+            res.status(200).send(product);
+
         }
         catch (err) {
             res.status(500).json(err);
@@ -82,7 +33,7 @@ class AdminController {
 
     // [get] /api/admin/stored-product
     storedProducts(req, res, next) {
-        Promise.all([Product.find({}), Product.countDocumentsDeleted()])
+        Promise.all([Product.find({category: req.params.category}, req.body), Product.countDocumentsDeleted()])
             .then(([products, deleteCount]) =>
                 res.json({
                     deleteCount,
@@ -108,7 +59,7 @@ class AdminController {
 
     // [put] api/admim/:id/update-product
     updateProduct(req, res) {
-        Product.updateOne({ _id: req.params.id }, req.body)
+        Product.updateOne({ _id: req.params.id })
             .then(() =>
                 res.status(200).json(Product)
             )
@@ -150,22 +101,35 @@ class AdminController {
             );
     };
 
-//------------STAFF--------    
+//-------------------------------STAFF------------------    
     // [post] /api/admin/create-staff
     createStaff = async (req, res, next) => {
         try {
-            const staff = await new Staff(req.body);
-            staff.save()
-            res.json(staff);
+           const {
+                username,
+                phonenumber,
+                password,
+                role
+           } = req.body;
+
+           const newStaff = await new User(
+            username,
+            phonenumber,
+            password,
+            role
+           )
+           newStaff.save();
+            res.status(200).json(newStaff);
         }
         catch (err) {
             res.status(500).json(err);
+            console.log(err)
         }
     };
 
     // [get] /api/admin/stored-staff
     storedStaffs(req, res, next) {
-        Promise.all([Staff.find({}), Staff.countDocumentsDeleted()])
+        Promise.all([User.find({}), Staff.countDocumentsDeleted()])
             .then(([staffs, deleteCount]) =>
                 res.json({
                     deleteCount,

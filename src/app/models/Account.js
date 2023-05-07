@@ -3,7 +3,7 @@ const mongooseDelete = require('mongoose-delete');
 
 const Schema = mongoose.Schema;
 
-const Customer = new Schema(
+const Account = new Schema(
     {
         username: {
             type: String,
@@ -11,11 +11,9 @@ const Customer = new Schema(
         },
 
         phonenumber: {
-            type: String,
+            type: Number,
             require: true,
             unique : true,
-            maxLength: 10,
-            minLength: 10,
         },
 
         email: {
@@ -39,24 +37,20 @@ const Customer = new Schema(
         address: {
             type: String
         },
-        admin: {
-            type: Boolean,
-            default: false
-        },
 
-        staff: {
-            type: Boolean,
-            default: false,
+        role :{
+            type: String,
+
         }
     },
 
     {
         versionKey: false,
-        collection: "customers",
+        collection: "accounts",
         timestamps: true,
     }
 );
 
-Customer.plugin(mongooseDelete, {overrideMethods: 'all'});
+Account.plugin(mongooseDelete, {overrideMethods: 'all'});
 
-module.exports = mongoose.model('customers', Customer);
+module.exports = mongoose.model('accounts', Account);

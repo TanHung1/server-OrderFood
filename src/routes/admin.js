@@ -1,26 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../app/controllers/AdminControllers');
+
+
+const { Auth } = require('../app/middleware/Authentication');
+const AdminControllers = require('../app/controllers/AdminControllers');
 
 //production routes
-router.post('/create-product', adminController.createProduct);
-router.get('/stored-product', adminController.storedProducts);
-router.get('/trash-product', adminController.trashProducts);
-router.put('/:id/update-product', adminController.updateProduct);
-router.delete('/:id/delete-product', adminController.deleteProduct);
-router.patch('/:id/restore-product', adminController.restoreProduct);
-router.delete('/:id/forcedelete-product', adminController.forcedeleteProduct);
+router.post('/create-product', Auth, AdminControllers.createProduct);
 
-router.get('/stored-customer', adminController.storedCustomers);
-router.post('/register', adminController.registerAdmin)
-router.post('/login', adminController.loginAdmin)
+router.get('/stored-product/:category', Auth, AdminControllers.storedProducts);
+router.get('/trash-product/:category', Auth, AdminControllers.trashProducts);
+router.put('/:id/update-product', Auth,AdminControllers.updateProduct);
+router.delete('/:id/delete-product', Auth, AdminControllers.deleteProduct);
+router.patch('/:id/restore-product', Auth, AdminControllers.restoreProduct);
+router.delete('/:id/forcedelete-product', Auth, AdminControllers.forcedeleteProduct);
+
+router.get('/stored-customer', Auth, AdminControllers.storedCustomers);
 //staff routes
-router.post('/create-staff', adminController.createStaff);
-router.get('/stored-staff', adminController.storedStaffs);
-router.get('/trash-staff', adminController.trashStaffs);
-router.put('/:id/update-staff', adminController.updateStaff);
-router.delete('/:id/delete-staff', adminController.deleteStaff);
-router.patch('/:id/restore-staff', adminController.restoreStaff);
-router.delete('/:id/forcedelete-staff', adminController.forcedeleteStaff);
+// router.post('/create-staff', Auth, AdminControllers.createStaff);
+router.get('/stored-staff', Auth, AdminControllers.storedStaffs);
+router.get('/trash-staff', Auth, AdminControllers.trashStaffs);
+router.put('/:id/update-staff', Auth, AdminControllers.updateStaff);
+router.delete('/:id/delete-staff', Auth, AdminControllers.deleteStaff);
+router.patch('/:id/restore-staff', Auth, AdminControllers.restoreStaff);
+router.delete('/:id/forcedelete-staff', Auth, AdminControllers.forcedeleteStaff);
 
 module.exports = router;
