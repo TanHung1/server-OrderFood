@@ -1,39 +1,54 @@
 const account = require('../models/Account');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-
+class AccountControler {
     //[post] api/account/register
-    const register = async (req, res, next) => {
+    register = async (req, res, next) => {
         try {
-            const {username, phonenumber, email, password, role} = req.body;
-            const newAccount = await new  account({username, phonenumber, email, password, role: 'customer'})
+            const salt = await bcrypt.genSalt(10);
+            const {
+                username,
+                phonenumber,
+                email,
+                hashed = await bcrypt.hash(req.body.password, salt)
+            } = req.body;
+            const newAccount = await new account(
+                {
+                    username,
+                    phonenumber,
+                    email,
+                    password: hashed,
+                })
             newAccount.save();
-            res.status(200).json(newAccount); 
+            res.status(200).json(newAccount);
         } catch (error) {
             res.status(500).json(error)
             console.log(error)
         }
-        
+
     }
 
     //[post] api/account/login
-    const login = async (req, res, next) => {
+    login = async (req, res, next) => {
         try {
-            const {email, password} = req.body;
-            const user = await account.findOne({email});
+            const {
+                email,
+                password: hashed,
+            } = req.body;
+            const user = await account.findOne({ email });
             const token = jwt.sign(
-                {userId: user._id},
-                 "minh",
-                 {expiresIn: "48h"}
+                { userId: user._id },
+                process.env.jwt_access_token,
+                { expiresIn: "48h" }
             );
-            res.status(200).json({token,user})
+            res.status(200).json({ token, user })
         } catch (error) {
             res.status(500).json(error)
             console.log(error)
         }
     };
-
-module.exports = {
-    register,
-    login
 }
+
+
+module.exports = new AccountControler;

@@ -31,9 +31,9 @@ class AdminController {
         }
     };
 
-    // [get] /api/admin/stored-product
+    // [get] /api/admin/stored-product:/category
     storedProducts(req, res, next) {
-        Promise.all([Product.find({category: req.params.category}, req.body), Product.countDocumentsDeleted()])
+        Promise.all([Product.find({category: req.params.category}), Product.countDocumentsDeleted({category: req.params.category})])
             .then(([products, deleteCount]) =>
                 res.json({
                     deleteCount,

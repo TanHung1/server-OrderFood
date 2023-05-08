@@ -11,7 +11,7 @@ const Account = new Schema(
         },
 
         phonenumber: {
-            type: Number,
+            type: String,
             require: true,
             unique : true,
         },
@@ -38,9 +38,19 @@ const Account = new Schema(
             type: String
         },
 
-        role :{
-            type: String,
+        admin: {
+            type: Boolean,
+            default: false
+        },
 
+        staff: {
+            type: Boolean,
+            default: false
+        },
+
+        shipper: {
+            type: Boolean,
+            default: false
         }
     },
 
