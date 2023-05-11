@@ -68,7 +68,7 @@ class AdminController {
             ))
     };
 
-    // [delete] /admim/:id/delete-staff
+    // [delete] /admim/:id/delete-product
     deleteProduct(req, res) {
         Product.delete({ _id: req.params.id })
             .then(
@@ -79,7 +79,7 @@ class AdminController {
             ))
     };
 
-    // [patch] /admim/:id/restoreProduct
+    // [patch] /admim/:id/restore-product
     restoreProduct(req, res, next) {
 
         Product.restore({ _id: req.params.id })

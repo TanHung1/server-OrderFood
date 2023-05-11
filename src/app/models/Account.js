@@ -38,20 +38,24 @@ const Account = new Schema(
             type: String
         },
 
-        admin: {
-            type: Boolean,
-            default: false
-        },
-
-        staff: {
-            type: Boolean,
-            default: false
-        },
-
-        shipper: {
-            type: Boolean,
-            default: false
+        role: {
+            type: String,
         }
+
+        // admin: {
+        //     type: Boolean,
+        //     default: false
+        // },
+
+        // staff: {
+        //     type: Boolean,
+        //     default: false
+        // },
+
+        // shipper: {
+        //     type: Boolean,
+        //     default: false
+        // }
     },
 
     {

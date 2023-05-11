@@ -11,7 +11,8 @@ class AccountControler {
                 username,
                 phonenumber,
                 email,
-                hashed = await bcrypt.hash(req.body.password, salt)
+                hashed = await bcrypt.hash(req.body.password, salt),
+                role
             } = req.body;
             const newAccount = await new account(
                 {
@@ -19,6 +20,7 @@ class AccountControler {
                     phonenumber,
                     email,
                     password: hashed,
+                    role: 'customer'
                 })
             newAccount.save();
             res.status(200).json(newAccount);
@@ -48,6 +50,19 @@ class AccountControler {
             console.log(error)
         }
     };
+
+     //[put] api/account/:id/update-account
+    updateAccount (req, res) {
+        account.updateOne({ _id: req.params.id }, req.body)
+            .then(() =>
+                res.status(200).send('oke')
+            )
+            .catch((err) =>
+                res.status(500).json(err)
+            )
+    };
+
+
 }
 
 
