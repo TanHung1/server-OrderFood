@@ -1,4 +1,4 @@
-const account = require('../models/Account');
+const Account = require('../models/Account');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -33,26 +33,41 @@ class AccountControler {
 
     //[post] api/account/login
     login = async (req, res, next) => {
-        try {
-            const {
-                email,
-                password: hashed,
-            } = req.body;
-            const user = await account.findOne({ email });
+        try {         
+
+            const user = await Account.findOne({email: req.body.email});
+
+            if(!user){
+                res.status(403).json("Sai email");
+            }
+            const vallidPassword = await bcrypt.compare(
+                req.body.password,
+                user.password,
+            );            
+            
+            if(!vallidPassword){
+                res.status(403).json("Sai mật khẩu")
+            }
+            
             const token = jwt.sign(
                 { userId: user._id },
                 process.env.jwt_access_token,
                 { expiresIn: "48h" }
             );
-            res.status(200).json({ token, user })
+
+            if(user && vallidPassword){
+                res.status(200).json({ token, user })                
+            }
+
         } catch (error) {
             res.status(500).json(error)
             console.log(error)
         }
+
     };
 
-     //[put] api/account/:id/update-account
-    updateAccount (req, res) {
+    //[put] api/account/:id/update-account
+    updateAccount(req, res) {
         account.updateOne({ _id: req.params.id }, req.body)
             .then(() =>
                 res.status(200).send('oke')
