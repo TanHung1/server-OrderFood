@@ -2,38 +2,39 @@ const Product = require('../models/Product');
 const User = require('../models/Account');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
 
-class AdminController {
-//-----------PRODUCT----------    
+
+
+class AdminController { 
     //[post] /api/admin/create-product
     createProduct = async (req, res) => {
         try {
-            const {
-                nameprod,
-                image,
-                category,
-                description,
-                price,
-            } = req.body;
-
-            const product = await new Product(
-                nameprod,
-                image,
-                category,
-                description,
-                price
-            );
-            product.save();
-            res.status(200).send(product);
-
+          const {
+            nameprod,
+            image,
+            category,
+            price,
+          } = req.body;
+      
+          const product = new Product({
+            nameprod,
+            image,
+            category,
+            price
+            });
+          await product.save();
+          res.status(200).send(product);
+      
         }
         catch (err) {
-            res.status(500).json(err);
+          res.status(500).json(err);
+          console.log(err);
         }
-    };
+      };
 
-    // [get] /api/admin/stored-product:/category
+
+    // [get] /api/admin/stored-product
     storedProducts(req, res, next) {
-        Promise.all([Product.find({category: req.params.category}), Product.countDocumentsDeleted({category: req.params.category})])
+        Promise.all([Product.find({}), Product.countDocumentsDeleted({})])
             .then(([products, deleteCount]) =>
                 res.json({
                     deleteCount,
@@ -57,7 +58,7 @@ class AdminController {
             );
     };
 
-    // [put] api/admim/:id/update-product
+    // [put] api/admin/:id/update-product
     updateProduct(req, res) {
         Product.updateOne({ _id: req.params.id })
             .then(() =>
@@ -68,7 +69,7 @@ class AdminController {
             ))
     };
 
-    // [delete] /admim/:id/delete-product
+    // [delete] /admin/:id/delete-product
     deleteProduct(req, res) {
         Product.delete({ _id: req.params.id })
             .then(
@@ -260,5 +261,4 @@ class AdminController {
     };
 
 }
-
 module.exports = new AdminController;

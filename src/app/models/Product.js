@@ -9,8 +9,7 @@ const Product = new Schema(
         nameprod: { type: String },
         image: { type: String },
         category: { type: String},
-        description: { type: String},
-        price: { type: Number},
+        price: { type: String},
         rating: { type: Number },
         cmt: { type: String},
         slug: { type: String, slug: "nameprod", unique: true, slugPaddingSize: 2 }
@@ -25,5 +24,6 @@ const Product = new Schema(
 
 mongoose.plugin(slug);
 Product.plugin(mongooseDelete, {overrideMethods: 'all'});
+
 
 module.exports = mongoose.model('products', Product);

@@ -14,7 +14,7 @@ class AccountControler {
                 hashed = await bcrypt.hash(req.body.password, salt),
                 role
             } = req.body;
-            const newAccount = await new account(
+            const newAccount = await new Account(
                 {
                     username,
                     phonenumber,

@@ -6,8 +6,8 @@ const AdminControllers = require('../app/controllers/AdminControllers');
 
 //production routes
 router.post('/create-product', AdminControllers.createProduct);
-router.get('/stored-product/:category', AdminControllers.storedProducts);
-router.get('/trash-product/:category', AdminControllers.trashProducts);
+router.get('/stored-product', AdminControllers.storedProducts);
+router.get('/trash-product', AdminControllers.trashProducts);
 router.put('/:id/update-product',AdminControllers.updateProduct);
 router.delete('/:id/delete-product', AdminControllers.deleteProduct);
 router.patch('/:id/restore-product', AdminControllers.restoreProduct);
