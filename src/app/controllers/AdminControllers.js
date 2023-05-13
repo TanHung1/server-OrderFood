@@ -113,13 +113,13 @@ class AdminController {
                 role
            } = req.body;
 
-           const newStaff = await new User(
+           const newStaff =  new User({
             username,
             phonenumber,
             password,
             role
-           )
-           newStaff.save();
+            })
+            await newStaff.save();
             res.status(200).json(newStaff);
         }
         catch (err) {
