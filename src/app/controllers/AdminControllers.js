@@ -103,30 +103,6 @@ class AdminController {
     };
 
 //-------------------------------STAFF------------------    
-    // [post] /api/admin/create-staff
-    createStaff = async (req, res, next) => {
-        try {
-           const {
-                username,
-                phonenumber,
-                password,
-                role
-           } = req.body;
-
-           const newStaff =  new User({
-            username,
-            phonenumber,
-            password,
-            role
-            })
-            await newStaff.save();
-            res.status(200).json(newStaff);
-        }
-        catch (err) {
-            res.status(500).json(err);
-            console.log(err)
-        }
-    };
 
     // [get] /api/admin/stored-staff
     storedStaffs(req, res, next) {

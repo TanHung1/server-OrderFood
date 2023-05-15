@@ -15,7 +15,6 @@ router.delete('/:id/forcedelete-product', AdminControllers.forcedeleteProduct);
 
 router.get('/stored-customer', AdminControllers.storedCustomers);
 //staff routes
-// router.post('/create-staff', AuththenticationAdmin, AdminControllers.createStaff);
 router.get('/stored-staff', AdminControllers.storedStaffs);
 router.get('/trash-staff', AdminControllers.trashStaffs);
 router.put('/:id/update-staff', AdminControllers.updateStaff);

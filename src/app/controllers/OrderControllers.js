@@ -7,15 +7,15 @@ class OrderController {
     newOrder = async (req, res) => {
         try {
             const {
-                shippignInfo,
+                shippingInfo,
                 orderItems,
                 itemsPrice,
                 totalPrice,
                 status
             } = req.body;
 
-            const order = await new Order({
-                shippignInfo,
+            const order =  new Order({
+                shippingInfo,
                 orderItems,
                 itemsPrice,
                 totalPrice,
@@ -23,7 +23,7 @@ class OrderController {
                 paidAt: Date.now(),
                 user: req.users._id
             })
-            order.save();
+            await order.save();
             res.status(200).json(order)
 
         } catch (error) {

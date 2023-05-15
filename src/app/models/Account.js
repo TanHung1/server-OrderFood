@@ -5,6 +5,10 @@ const Schema = mongoose.Schema;
 
 const Account = new Schema(
     {
+        fullname:{
+            type: String,
+        },
+
         username: {
             type: String,
             require: true
@@ -40,25 +44,11 @@ const Account = new Schema(
 
         role: {
             type: String,
+            default: 'customer'
         }
-
-        // admin: {
-        //     type: Boolean,
-        //     default: false
-        // },
-
-        // staff: {
-        //     type: Boolean,
-        //     default: false
-        // },
-
-        // shipper: {
-        //     type: Boolean,
-        //     default: false
-        // }
     },
 
-    {
+    { 
         versionKey: false,
         collection: "accounts",
         timestamps: true,

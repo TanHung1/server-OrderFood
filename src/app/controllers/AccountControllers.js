@@ -14,15 +14,15 @@ class AccountControler {
                 hashed = await bcrypt.hash(req.body.password, salt),
                 role
             } = req.body;
-            const newAccount = await new Account(
+            const newAccount = new Account(
                 {
                     username,
                     phonenumber,
                     email,
                     password: hashed,
-                    role: 'customer'
+                    role
                 })
-            newAccount.save();
+            await newAccount.save();
             res.status(200).json(newAccount);
         } catch (error) {
             res.status(500).json(error)
@@ -33,30 +33,30 @@ class AccountControler {
 
     //[post] api/account/login
     login = async (req, res, next) => {
-        try {         
+        try {
 
-            const user = await Account.findOne({email: req.body.email});
+            const user = await Account.findOne({ email: req.body.email });
 
-            if(!user){
+            if (!user) {
                 res.status(403).json("Sai email");
             }
             const vallidPassword = await bcrypt.compare(
                 req.body.password,
                 user.password,
-            );            
-            
-            if(!vallidPassword){
+            );
+
+            if (!vallidPassword) {
                 res.status(403).json("Sai mật khẩu")
             }
-            
+
             const token = jwt.sign(
                 { userId: user._id },
                 process.env.jwt_access_token,
                 { expiresIn: "48h" }
             );
 
-            if(user && vallidPassword){
-                res.status(200).json({ token, user })                
+            if (user && vallidPassword) {
+                res.status(200).json({ token, user })
             }
 
         } catch (error) {
@@ -68,7 +68,7 @@ class AccountControler {
 
     //[put] api/account/:id/update-account
     updateAccount(req, res) {
-        account.updateOne({ _id: req.params.id }, req.body)
+        Account.updateOne({ _id: req.params.id }, req.body)
             .then(() =>
                 res.status(200).send('oke')
             )
