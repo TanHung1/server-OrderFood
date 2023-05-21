@@ -30,6 +30,12 @@ const Account = new Schema(
             type: String
         },
 
+        loginType: {
+            type: String,
+            enum: ['local', 'google', 'facebook'],
+            default: 'local',
+        },
+
         sex: {
             type: String
         },

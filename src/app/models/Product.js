@@ -9,7 +9,7 @@ const Product = new Schema(
         nameprod: { type: String },
         image: { type: String },
         category: { type: String},
-        price: { type: String},
+        price: { type: Number},
         rating: { type: Number },
         cmt: { type: String},
         slug: { type: String, slug: "nameprod", unique: true, slugPaddingSize: 2 }

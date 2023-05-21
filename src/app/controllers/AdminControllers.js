@@ -1,8 +1,7 @@
 const Product = require('../models/Product');
 const User = require('../models/Account');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
-
-
+const Order = require('../models/Order');
 
 class AdminController { 
     //[post] /api/admin/create-product
@@ -12,14 +11,14 @@ class AdminController {
             nameprod,
             image,
             category,
-            price,
+            price
           } = req.body;
-      
+          
           const product = new Product({
             nameprod,
             image,
             category,
-            price
+            price: mongoose.Decimal128,
             });
           await product.save();
           res.status(200).send(product);
@@ -191,7 +190,7 @@ class AdminController {
             );        
     };
 
-    // [] api/admin/trash-customers/
+    // [get] api/admin/trash-customers/
     trashCustomer(req, res){
         Customer.findDeleted({})
             .then(customers =>
@@ -203,7 +202,7 @@ class AdminController {
             )    
     };
 
-    // [] api/admin/:id/delete-customers/
+    // [delete] api/admin/:id/delete-customers/
     deleteCustomer(req, res) {
         Customer.delete({_id: req.params.id})
             .then(() =>
@@ -214,7 +213,7 @@ class AdminController {
             )
     };
 
-    // [] api/admin/restore-customers/
+    // [patch] api/admin/restore-customers/
     restoreCustomer(res, req){
         Customer.restore({_id: req.params.id})
             .then(() => 
@@ -225,7 +224,7 @@ class AdminController {
             )
     };
 
-    // [] api/admin/forcedelete-customers/
+    // [delete] api/admin/forcedelete-customers/
     forcedeleteCustomer(req, res){
         Customer.deleteOne({_id:req.params.id})
             .then(() => 
@@ -234,6 +233,26 @@ class AdminController {
             .catch((err) => 
                 res.status(500).json(err)
             )
+    };
+
+    //[get] /api/admin/allorders
+    getAllOrders = async (req, res) => {
+        try {
+            const orders = await Order.find();
+            let totalAmount = 0;
+            orders.forEach((order) => {
+                totalAmount += order.totalPrice;
+            })
+
+            res.status(200).json({
+                orders: mutipleMongooseToObject(orders),
+                totalAmount,
+            })
+        }
+        catch (error) {
+            res.status(500).json(error)
+            console.log(error)
+        }
     };
 
 }

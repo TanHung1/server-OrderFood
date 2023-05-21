@@ -2,6 +2,7 @@ const Account = require('../models/Account');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+
 class AccountControler {
     //[post] api/account/register
     register = async (req, res, next) => {
@@ -20,7 +21,7 @@ class AccountControler {
                     phonenumber,
                     email,
                     password: hashed,
-                    role
+                    role,
                 })
             await newAccount.save();
             res.status(200).json(newAccount);
@@ -65,6 +66,11 @@ class AccountControler {
         }
 
     };
+
+    //[post] /api/account/login/google
+    loginGoogle = async (req, res) =>{
+        console.log('auth google', req.user)
+    }
 
     //[put] api/account/:id/update-account
     updateAccount(req, res) {

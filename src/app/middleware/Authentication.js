@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
-const account = require('../models/Account');
+const Account = require('../models/Account');
 const GooglePlusTokenStrategy = require('passport-google-plus-token');
-const passport = require("passport");
+const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
+const passport = require('passport');
 
 const AuthenticationAccount = (role) => async (req, res, next) => {
     const authheader = req.header('Authorization');
@@ -13,7 +14,7 @@ const AuthenticationAccount = (role) => async (req, res, next) => {
     console.log(accessToken);
     try {
         const record = jwt.verify(accessToken, process.env.jwt_access_token);
-        const user = await account.findOne({ _id: record.userId });
+        const user = await Account.findOne({ _id: record.userId });
 
         if (!user || user.role !== role) {
             return res.status(403).send('Ban khong co quyen truy cap')
@@ -27,35 +28,39 @@ const AuthenticationAccount = (role) => async (req, res, next) => {
 }
 
 passport.use(
-    new GooglePlusTokenStrategy(
+    new GoogleStrategy(
       {
-        clientID: `process.env.GOOGLE_CLIENT_ID`,
-        clientSecret: `process.env.GOOGLE_CLIENT_SECRET`,
+        clientID: '113981226682-vk1qqh65b4d0j2l5ag62k455s69dvkes.apps.googleusercontent.com',
+        clientSecret: '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',
+        callbackURL: '/login/google/callback',
         passReqToCallback: true
       },
-      async (req, accessToken, refreshToken, profile, next) => {
+      async (req, accessToken, refreshToken, profile, done) => {
         try {
-          // Kiểm tra xem user đã đăng ký chưa
-          const user = await account.findOne({ googleId: profile.id });
+          const user = await Account.findOne({ 'google.id': profile.id });
+  
           if (user) {
-            // Nếu user đã đăng ký, trả về thông tin user
-            return next(null, user);
+            // Nếu người dùng đã đăng ký, tạo token JWT bằng thông tin user và secret của bạn
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            return done(null, { token });
           }
   
-          // Nếu user chưa đăng ký, tạo tài khoản mới với thông tin từ Google
-          const newUser = new account({
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            password: null,
-            googleId: profile.id,
-            role: "user"
+          // Nếu hiện tại người dùng chưa đăng ký, tạo tài khoản mới
+          const newUser = new Account({
+            method: 'google',
+            google: {
+              id: profile.id,
+              email: profile.emails[0].value,
+              name: profile.displayName
+            }
           });
           await newUser.save();
   
-          // Trả về thông tin user mới đăng ký
-          return next(null, newUser);
+          // Tạo token JWT và trả về phản hồi.
+          const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+          return done(null, { token });
         } catch (error) {
-          return next(error, null);
+          return done(error, null);
         }
       }
     )

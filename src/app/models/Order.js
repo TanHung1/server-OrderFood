@@ -4,22 +4,33 @@ const Schema = mongoose.Schema;
 
 const Order = new Schema(
     {
-        shippingInfo: {
-            address: {type: String},
-            phonenumber: {type: String},            
+
+        address: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'accounts'
         },
-        orderItems: [
-            {
-                namerpod: {type: String},
-                price: {type: Number},
-                quantity: {type: String},
-                image: {type: String},
-                product: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'products'
-                },
-            }
-        ],
+
+        phonenumber: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'products'
+        },
+
+        nameprod: { 
+            type: mongoose.Schema.ObjectId,
+            ref: 'products' 
+        },
+        price: { 
+            ttype: mongoose.Schema.ObjectId,
+            ref: 'products' 
+        },
+        quantity: { 
+            type: Number,
+            default: 0,
+        },
+        image: { 
+            type: mongoose.Schema.ObjectId,
+            ref: 'products'
+        },
 
         user: {
             type: mongoose.Schema.ObjectId,
@@ -27,7 +38,7 @@ const Order = new Schema(
         },
 
         status: {
-            type: String,            
+            type: String,
         },
 
         patdAt: {

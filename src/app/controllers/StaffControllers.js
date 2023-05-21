@@ -1,7 +1,9 @@
 const Order = require('../models/Order');
 const { mongooesToObject } = require('../../util/mongoose');
+const { mutipleMongooseToObject} = require ('../../util/mongoose');
 
 class StaffController {
+
     updateOrder = async (req, res) => {
         try {
             const order = await Order.findById(req.params.id);
@@ -21,4 +23,26 @@ class StaffController {
 
         }
     };
+
+    //[get] /api/staff/all-orders
+    getAllOrders = async (req, res) => {
+        try {
+            const orders = await Order.find();
+            let totalAmount = 0;
+            orders.forEach((order) => {
+                totalAmount += order.totalPrice;
+            })
+
+            res.status(200).json({
+                orders: mutipleMongooseToObject(orders),
+                totalAmount,
+            })
+        }
+        catch (error) {
+            res.status(500).json(error)
+            console.log(error)
+        }
+    };
 }
+
+module.exports = new StaffController;

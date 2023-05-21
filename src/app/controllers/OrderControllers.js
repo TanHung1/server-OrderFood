@@ -1,5 +1,5 @@
 const Order = require('../models/Order');
-const { mutipleMongooseToObject } = require('../../util/mongoose');
+
 
 class OrderController {
 
@@ -7,17 +7,25 @@ class OrderController {
     newOrder = async (req, res) => {
         try {
             const {
-                shippingInfo,
-                orderItems,
-                itemsPrice,
+                address,
+                phonenumber,
+                nameprod,
+                price,
+                quantity,
+                image,
+                user,
                 totalPrice,
                 status
             } = req.body;
 
             const order =  new Order({
-                shippingInfo,
-                orderItems,
-                itemsPrice,
+                address,
+                phonenumber,
+                nameprod,
+                price: mongoose.Decimal128,
+                quantity,
+                image,
+                user,
                 totalPrice,
                 status,
                 paidAt: Date.now(),
@@ -43,25 +51,7 @@ class OrderController {
         }
     };
 
-    //[get] /api/admin/allorders
-    getAllOrders = async (req, res) => {
-        try {
-            const orders = await Order.find();
-            let totalAmount = 0;
-            orders.forEach((order) => {
-                totalAmount += order.totalPrice;
-            })
-
-            res.status(200).json({
-                orders: mutipleMongooseToObject(orders),
-                totalAmount,
-            })
-        }
-        catch (error) {
-            res.status(500).json(error)
-            console.log(error)
-        }
-    }
+   
     
 }
 module.exports = new OrderController;
