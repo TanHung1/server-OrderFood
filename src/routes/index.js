@@ -8,10 +8,10 @@ const { AuthenticationAccount } = require('../app/middleware/Authentication');
 function route(app) 
 { 
     app.use('/api/product', productRouter);
-    app.use('/api/admin', AuthenticationAccount('admin'),adminRourter);
+    app.use('/api/admin', AuthenticationAccount,adminRourter);
     app.use('/api/account', accountRouter);
-    app.use('/api/order', AuthenticationAccount('customer'), orderRouter);
-    app.use('/api/staff', AuthenticationAccount('staff'), staffRouter);
+    app.use('/api/order', orderRouter);
+    app.use('/api/staff', AuthenticationAccount, staffRouter);
 }
 
 module.exports = route;

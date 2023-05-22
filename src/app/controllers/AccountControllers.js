@@ -68,9 +68,9 @@ class AccountControler {
     };
 
     //[post] /api/account/login/google
-    loginGoogle = async (req, res) =>{
-        console.log('auth google', req.user)
-    }
+    // loginGoogle = async (req, res) =>{
+    //     console.log('auth google', req.user)
+    // }
 
     //[put] api/account/:id/update-account
     updateAccount(req, res) {

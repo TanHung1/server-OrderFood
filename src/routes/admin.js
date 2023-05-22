@@ -12,6 +12,7 @@ router.put('/:id/update-product',AdminControllers.updateProduct);
 router.delete('/:id/delete-product', AdminControllers.deleteProduct);
 router.patch('/:id/restore-product', AdminControllers.restoreProduct);
 router.delete('/:id/forcedelete-product', AdminControllers.forcedeleteProduct);
+router.get('/allorders', AdminControllers.getAllOrders)
 
 router.get('/stored-customer', AdminControllers.storedCustomers);
 //staff routes

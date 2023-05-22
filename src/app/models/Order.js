@@ -1,53 +1,47 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 
 const Schema = mongoose.Schema;
+
+const products = new Schema({
+    nameprod: {
+        type: String,
+    },
+
+    quantity: {
+        type: Number,
+    },
+
+    price: {
+        type: Number,
+    },
+
+    id: {
+        type: String,
+    }
+
+});
 
 const Order = new Schema(
     {
 
-        address: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'accounts'
+        product: {
+            type: [
+                products
+            ]
         },
 
-        phonenumber: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'products'
-        },
-
-        nameprod: { 
-            type: mongoose.Schema.ObjectId,
-            ref: 'products' 
-        },
-        price: { 
-            ttype: mongoose.Schema.ObjectId,
-            ref: 'products' 
-        },
-        quantity: { 
-            type: Number,
-            default: 0,
-        },
-        image: { 
-            type: mongoose.Schema.ObjectId,
-            ref: 'products'
-        },
-
-        user: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'users'
-        },
+        username: 
+        {
+            type: String
+        }, 
 
         status: {
             type: String,
+            default: "Chưa xác nhận"
         },
 
         patdAt: {
             type: Date
-        },
-
-        itemsPrice: {
-            type: Number,
-            default: 0
         },
 
         totalPrice: {
@@ -72,5 +66,8 @@ const Order = new Schema(
     }
 
 );
+
+
+
 
 module.exports = mongoose.model('orders', Order);

@@ -1,43 +1,36 @@
 const Order = require('../models/Order');
 
-
 class OrderController {
 
-    //[post] /api/order/new
+    //[post] /api/order/neworder
     newOrder = async (req, res) => {
+        const user = req.user;
         try {
             const {
-                address,
-                phonenumber,
-                nameprod,
-                price,
-                quantity,
-                image,
-                user,
+                username ,
+                cart,
                 totalPrice,
-                status
+
             } = req.body;
 
-            const order =  new Order({
-                address,
-                phonenumber,
-                nameprod,
-                price: mongoose.Decimal128,
-                quantity,
-                image,
-                user,
+            const order = new Order({
+                username: user.username,
+                // phonenumber: user.phonenumber,
+                product: cart.map((item) => {
+                    return item
+                }),
                 totalPrice,
-                status,
                 paidAt: Date.now(),
-                user: req.users._id
             })
             await order.save();
             res.status(200).json(order)
 
-        } catch (error) {
+        }
+        catch (error) {
             res.status(500).json(error);
             console.log(error)
         }
+        console.log(user)
     }
 
     //[get]/api/customers/myorder
@@ -50,8 +43,5 @@ class OrderController {
             console.log(error);
         }
     };
-
-   
-    
 }
 module.exports = new OrderController;

@@ -18,7 +18,7 @@ class AdminController {
             nameprod,
             image,
             category,
-            price: mongoose.Decimal128,
+            price,
             });
           await product.save();
           res.status(200).send(product);
