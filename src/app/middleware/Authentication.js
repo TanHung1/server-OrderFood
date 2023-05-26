@@ -1,31 +1,31 @@
-const jwt = require('jsonwebtoken');
-const Account = require('../models/Account');
-const GooglePlusTokenStrategy = require('passport-google-plus-token');
-const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
-const passport = require('passport');
+const jwt = require("jsonwebtoken");
+const Account = require("../models/Account");
+// const GooglePlusTokenStrategy = require('passport-google-plus-token');
+// const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
+//const passport = require("passport");
 
 const AuthenticationAccount = async (req, res, next) => {
-    const authheader = req.header('Authorization');
-    const accessToken = authheader && authheader.split(" ")[1];
-    if (!accessToken) {
-        return res.status(404).send('Token khong ton tai')
-    }
+  const authheader = req.header("Authorization");
+  const accessToken = authheader && authheader.split(" ")[1];
+  if (!accessToken) {
+    return res.status(404).send("Token khong ton tai");
+  }
 
-    console.log(accessToken);
-    try {
-        const record = jwt.verify(accessToken, process.env.jwt_access_token);
-        const user = await Account.findOne({ _id: record.userId });
+  console.log(accessToken);
+  try {
+    const record = jwt.verify(accessToken, process.env.jwt_access_token);
+    const user = await Account.findOne({ _id: record.userId });
 
-        if (!record) {
-            return res.status(403).send('Ban khong co quyen truy cap')
-        }
-        req.user = user;
-        next();
-    } catch (error) {
-        res.status(500).send(error)
-        console.log(error)
+    if (!record) {
+      return res.status(403).send("Ban khong co quyen truy cap");
     }
-}
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(500).send(error);
+    console.log(error);
+  }
+};
 
 // passport.use(
 //     new GoogleStrategy(
@@ -38,13 +38,13 @@ const AuthenticationAccount = async (req, res, next) => {
 //       async (req, accessToken, refreshToken, profile, done) => {
 //         try {
 //           const user = await Account.findOne({ 'google.id': profile.id });
-  
+
 //           if (user) {
 //             // Nếu người dùng đã đăng ký, tạo token JWT bằng thông tin user và secret của bạn
 //             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 //             return done(null, { token });
 //           }
-  
+
 //           // Nếu hiện tại người dùng chưa đăng ký, tạo tài khoản mới
 //           const newUser = new Account({
 //             method: 'google',
@@ -55,7 +55,7 @@ const AuthenticationAccount = async (req, res, next) => {
 //             }
 //           });
 //           await newUser.save();
-  
+
 //           // Tạo token JWT và trả về phản hồi.
 //           const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 //           return done(null, { token });
@@ -65,8 +65,7 @@ const AuthenticationAccount = async (req, res, next) => {
 //       }
 //     )
 //   );
-  
 
 module.exports = {
-    AuthenticationAccount
-}
+  AuthenticationAccount,
+};
